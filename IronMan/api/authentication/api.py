@@ -6,14 +6,14 @@
 
 class AuthenticationApi:
 
-    def __init__(self, ironman_instance):
+    def __init__(self, lr_object):
         """
-        :param ironman_instance: this is the reference to the parent IronMan object.
+        :param lr_object: this is the reference to the parent IronMan object.
         """
-        self._ironman_instance = ironman_instance
+        self._lr_object = lr_object
 
 
-    def retrieve_user_identity(self, access_token, fields:None):
+    def retrieve_user_identity(self, access_token, fields):
         """This API will return all the accepted privacy policies for the user by providing the access_token of that user.
         
         Args:
@@ -24,17 +24,18 @@ class AuthenticationApi:
         15.2
         """
 
-        if(self._ironman_instance.is_null_or_whitespace(access_token)):
-            raise Exception(self._ironman_instance.get_validation_message("access_token"))
+        if(self._lr_object.is_null_or_whitespace(access_token)):
+            raise Exception(self._lr_object.get_validation_message("access_token"))
 
         query_parameters = {}
         query_parameters["access_token"] = access_token
-        query_parameters["apiKey"] = self._ironman_instance.get_api_key()
+        query_parameters["apiKey"] = self._lr_object.get_api_key()
 
         resource_path = "/v1/profile"
-        return self._ironman_instance.execute("GET", resource_path, query_parameters, None)
 
-    def register(self, payload, verificationUrl=None, email_template=None):
+        return self._lr_object.execute("GET", resource_path, query_parameters, None)
+
+    def register(self, payload, verification_url=None, email_template=None):
         """This API creates a user in the database as well as sends a verification email to the user.
         
         Args:
@@ -51,18 +52,20 @@ class AuthenticationApi:
         17.1.1
         """
         if(payload is None):
-            raise Exception(self._ironman_instance.get_validation_message("payload"))
+            raise Exception(self._lr_object.get_validation_message("payload"))
 
 
         query_parameters = {}
-        query_parameters["apiKey"] = self._ironman_instance.get_api_key()
-        if(not self._ironman_instance.is_null_or_whitespace(email_template)):
+        query_parameters["apiKey"] = self._lr_object.get_api_key()
+        if(not self._lr_object.is_null_or_whitespace(email_template)):
             query_parameters["emailTemplate"] = email_template
-        if(not self._ironman_instance.is_null_or_whitespace(verification_url)):
+        if(not self._lr_object.is_null_or_whitespace(verification_url)):
             query_parameters["verificationUrl"] = verification_url
 
         resource_path = "/v1/register"
-        return self._ironman_instance.execute("POST", resource_path, query_parameters, payload)
+        print (resource_path)
+        
+        return self._lr_object.execute("POST", resource_path, query_parameters, payload)
 
     
 
@@ -79,14 +82,14 @@ class AuthenticationApi:
         17.3
         """
 
-        if(self._ironman_instance.is_null_or_whitespace(email)):
-            raise Exception(self._ironman_instance.get_validation_message("email"))
+        if(self._lr_object.is_null_or_whitespace(email)):
+            raise Exception(self._lr_object.get_validation_message("email"))
 
         query_parameters = {}
-        query_parameters["apiKey"] = self._ironman_instance.get_api_key()
+        query_parameters["apiKey"] = self._lr_object.get_api_key()
 
         body_parameters = {}
         body_parameters["email"] = email
 
         resource_path = "/v1/email/resendverify"
-        return self._ironman_instance.execute("PUT", resource_path, query_parameters, body_parameters)
+        return self._lr_object.execute("PUT", resource_path, query_parameters, body_parameters)

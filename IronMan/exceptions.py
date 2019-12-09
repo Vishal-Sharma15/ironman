@@ -103,6 +103,17 @@ class Exceptions:
         def __str__(self):
             return "The IronMan API Key is not valid, please double check your account."
 
+    class APISecretInvalid(IronManExceptions):
+        """
+        Raised if you your API Secret is invalid.
+        """
+
+        def __init__(self):
+            pass
+
+        def __str__(self):
+            return "The IronMan API Secret is not valid, please double check your account."
+
     class InvalidRequestToken(IronManExceptions):
         """
         Raised if you your request token is invalid from the POST request.

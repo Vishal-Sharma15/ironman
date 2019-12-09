@@ -1,4 +1,19 @@
 #!/usr/bin/python
+#################################################
+# Class for Initilizing the IronMan Class   #
+#################################################
+# This is the main class to communicate with    #
+# IronMan' Unified User Registration API.
+#                                               #
+# Please note that some API calls are for       #
+# premium or enterprise members only.           #
+# In which case, an exception will be raised.   #
+#################################################
+# Copyright 2019 IronMan.               #                        #
+#################################################
+# This file is part of the IronMan SDK      #
+# package.                                      #
+#################################################
 
 __author__ = "IronMan"
 __copyright__ = "Copyright 2019, IronMan"
@@ -24,7 +39,7 @@ from cryptography.hazmat.primitives.ciphers import modes
 from pbkdf2 import PBKDF2
 
 # Authentication APIs
-from IronMan.api.authentication.authentication_api import AuthenticationApi
+from IronMan.api.authentication.api import AuthenticationApi
 
 # exception
 from IronMan.exceptions import Exceptions
@@ -161,11 +176,21 @@ class IronMan:
         if self.SERVER_REGION is not None and self.SERVER_REGION != "":
             query_params['region'] = self.SERVER_REGION
 
+        apiSecret = None
+        if "apiSecret" in query_params:
+            apiSecret = query_params['apiSecret']
+            query_params.pop("apiSecret")
+
+        headers = {'Content-Type': "application/json",
+                   'Accept-encoding': 'gzip'}
 
         if "access_token" in query_params and "/auth" in resource_url:
             headers.update({"Authorization": "Bearer " + query_params['access_token']})
             query_params.pop("access_token")
 
+
+        if apiSecret and "/manage" in resource_url and not self.API_REQUEST_SIGNING:
+            headers.update({"X-IronMan-ApiSecret": apiSecret})
 
         api_end_point = api_end_point + "?"
         for key, value in query_params.items():
